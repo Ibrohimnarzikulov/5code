@@ -119,7 +119,7 @@ istalgan cloud providerga ham o'tish mumkin.
 Bir qatorda (git clone + Python muhit + `5code` buyrug'ini PATH ga qo'yadi):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Ibrohimnarzikulov/codeassistant/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Ibrohimnarzikulov/5code/main/install.sh | bash
 ```
 
 Yoki loyiha allaqachon lokalda bo'lsa:

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # CodeAssistant / 5code — bir qatorli o'rnatuvchi.
 #
-#   curl -fsSL https://raw.githubusercontent.com/Ibrohimnarzikulov/codeassistant/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/Ibrohimnarzikulov/5code/main/install.sh | bash
 #
 # Nima qiladi:
 #   1. Loyihani ~/codeassistant ga clone qiladi (mavjud bo'lsa — yangilaydi)
@@ -12,8 +12,8 @@
 
 set -euo pipefail
 
-REPO_URL="https://github.com/Ibrohimnarzikulov/codeassistant.git"
-INSTALL_DIR="${CODEASSISTANT_DIR:-$HOME/codeassistant}"
+REPO_URL="https://github.com/Ibrohimnarzikulov/5code.git"
+INSTALL_DIR="${CODEASSISTANT_DIR:-$HOME/5code}"
 
 c_ok=$'\033[36m'; c_dim=$'\033[2m'; c_err=$'\033[31m'; c_bold=$'\033[1m'; c_off=$'\033[0m'
 
