@@ -95,6 +95,26 @@ def test_resolve_provider_explicit_model_without_provider() -> None:
     assert model == "custom"
 
 
+# --- Brend nomlash (ollama/qwen ichki nomlari ko'rsatilmaydi) ---------------
+
+
+def test_display_model_hides_ollama_provider() -> None:
+    assert cli.display_model("ollama", "5code") == "5code"
+
+
+def test_display_model_brands_qwen_as_pro() -> None:
+    assert cli.display_model("ollama", "qwen2.5-coder:14b") == "5code_pro"
+
+
+def test_display_model_keeps_cloud_model_name() -> None:
+    assert cli.display_model("gemini", "gemini-3.5-flash") == "gemini-3.5-flash"
+
+
+def test_format_banner_never_shows_raw_provider_name() -> None:
+    banner = cli.format_banner(cwd=cli.Path("/tmp/x"), provider="ollama", model="5code")
+    assert "ollama" not in banner.lower()
+
+
 # --- Piped stdin ------------------------------------------------------------
 
 

@@ -14,6 +14,16 @@ router = APIRouter(prefix="/api/models", tags=["models"])
 OLLAMA_TAGS_TIMEOUT = 2.0
 PRIMARY_LOCAL_MODEL = "5code"
 
+# Xom model nomlari ("qwen2.5-coder" kabi) hech qachon foydalanuvchiga
+# ko'rsatilmaydi — o'rniga brend nomi ishlatiladi.
+_BRAND_LABELS = {"qwen2.5-coder": "5code_pro"}
+
+
+def _brand_label(tag: str) -> str:
+    """Ollama tag'ini brend nomiga o'giradi (topilmasa — o'zgarishsiz)."""
+    bare = tag.split(":")[0]
+    return _BRAND_LABELS.get(bare, tag)
+
 
 async def _ollama_models() -> list[str]:
     """Lokal Ollama'dagi modellar ro'yxati (xizmat yopiq bo'lsa — bo'sh)."""
@@ -62,8 +72,8 @@ async def list_models(_: CurrentUser) -> list[ModelOption]:
             ModelOption(
                 provider="ollama",
                 model=name,
-                label=name,
-                description="Lokal Ollama modeli — internetsiz ishlaydi.",
+                label=f"{_brand_label(name)} (lokal)",
+                description="Qo'shimcha lokal model — internetsiz ishlaydi.",
                 local=True,
                 available=True,
             )

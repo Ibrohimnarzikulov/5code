@@ -70,12 +70,25 @@ def read_piped_stdin(stream: TextIO | None = None) -> str | None:
     return data if data.strip() else None
 
 
+# Xom provider/model nomlari ("ollama", "qwen2.5-coder"...) hech qachon
+# terminalga chiqarilmaydi — o'rniga brend nomi ko'rsatiladi.
+_BRAND_MODEL_LABELS = {"qwen2.5-coder": "5code_pro"}
+
+
+def display_model(provider: str, model: str | None) -> str:
+    """Terminalda ko'rsatiladigan brend nomi (ichki provider/model emas)."""
+    if provider == "ollama":
+        bare = (model or "").split(":")[0]
+        return _BRAND_MODEL_LABELS.get(bare, bare or "5code")
+    return model or provider
+
+
 def format_banner(*, cwd: Path, provider: str, model: str | None) -> str:
     """Ishga tushishda ko'rsatiladigan holat va ruxsat banneri."""
     return (
         f"{ACC}{BOLD}5code{OFF} {DIM}— lokal kod yordamchisi{OFF}\n"
         f"{DIM}Papka:{OFF}  {cwd}\n"
-        f"{DIM}Model:{OFF}  {provider}/{model or 'default'}\n"
+        f"{DIM}Model:{OFF}  {display_model(provider, model)}\n"
         f"{DIM}Bu CLI shu papkada fayl o'qiy/yoza oladi va buyruq bajara oladi.{OFF}\n"
         f"{DIM}Xavfli buyruqlar tasdiq so'raydi. Chiqish: /bye yoki Ctrl+D{OFF}\n"
     )

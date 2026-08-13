@@ -202,3 +202,31 @@ async def test_ollama_models_use_ollama_base_url(monkeypatch) -> None:
     assert result == ["5code:latest"]
     assert called == ["http://localhost:11434/api/tags"]
     assert "groq" not in called[0]
+
+
+def test_brand_label_maps_qwen_to_pro() -> None:
+    from app.routers.models import _brand_label
+
+    assert _brand_label("qwen2.5-coder:14b") == "5code_pro"
+    assert _brand_label("5code:latest") == "5code:latest"
+    assert _brand_label("llama3:8b") == "llama3:8b"
+
+
+async def test_qwen_tag_is_branded_not_raw(
+    client: httpx.AsyncClient, auth_headers: dict[str, str], monkeypatch
+) -> None:
+    """Xom 'qwen...' tegi UI'ga chiqmaydi — '5code_pro' sifatida ko'rsatiladi."""
+    from app.routers import models as models_router
+
+    async def fake_ollama_models() -> list[str]:
+        return ["5code:latest", "qwen2.5-coder:14b"]
+
+    monkeypatch.setattr(models_router, "_ollama_models", fake_ollama_models)
+
+    response = await client.get("/api/models", headers=auth_headers)
+    models = response.json()
+
+    pro = next(m for m in models if m["model"] == "qwen2.5-coder:14b")
+    assert pro["label"] == "5code_pro (lokal)"
+    assert "qwen" not in pro["label"].lower()
+    assert "ollama" not in pro["description"].lower()

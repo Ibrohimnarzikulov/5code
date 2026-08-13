@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { api } from "../api";
+import { brandModel, brandProvider } from "../brand";
 import Shell from "../components/Shell";
 import { useAuth } from "../context/AuthContext";
 
@@ -87,7 +88,7 @@ export default function Models() {
         ) : (
           <>
             <Section
-              title="Lokal — Ollama"
+              title="Lokal — 5code"
               hint="Kompyuteringizda ishlaydi · maxfiy · tekin"
               models={local}
               isSelected={isSelected}
@@ -108,7 +109,7 @@ export default function Models() {
                 Joriy tanlov:{" "}
                 <b>
                   {user?.ai_provider
-                    ? `${user.ai_provider} · ${user.ai_model}`
+                    ? `${brandProvider(user.ai_provider)} · ${brandModel(user.ai_model)}`
                     : "standart (serverdagi sozlama)"}
                 </b>
               </span>
@@ -161,7 +162,7 @@ function Section({ title, hint, models, isSelected, saving, onChoose }) {
               </div>
               <p>{option.description}</p>
               <div className="model-foot">
-                <code>{option.model}</code>
+                <code>{option.local ? brandModel(option.model) : option.model}</code>
                 {!option.available && (
                   <span className="pill">
                     {option.local ? "yuklanmagan" : "kalit yo'q"}

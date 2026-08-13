@@ -2,6 +2,7 @@
 
 import { NavLink, useNavigate } from "react-router-dom";
 
+import { brandModel, brandProvider } from "../brand";
 import { useAuth } from "../context/AuthContext";
 
 export default function Shell({ children, sidebarExtra = null, wide = false }) {
@@ -22,7 +23,7 @@ export default function Shell({ children, sidebarExtra = null, wide = false }) {
             <strong>CodeAssistant</strong>
             <small>
               {user?.ai_provider
-                ? `${user.ai_provider} · ${user.ai_model}`
+                ? `${brandProvider(user.ai_provider)} · ${brandModel(user.ai_model)}`
                 : "standart model"}
             </small>
           </div>

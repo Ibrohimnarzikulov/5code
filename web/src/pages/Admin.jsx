@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { api } from "../api";
+import { brandModel } from "../brand";
 import Shell from "../components/Shell";
 import { useAuth } from "../context/AuthContext";
 
@@ -157,7 +158,7 @@ export default function Admin() {
                     </span>
                     {!u.is_active && <span className="pill">bloklangan</span>}
                     {u.ai_provider && (
-                      <span className="pill">{u.ai_model}</span>
+                      <span className="pill">{brandModel(u.ai_model)}</span>
                     )}
                   </div>
                 </div>
