@@ -1,0 +1,17 @@
+services:
+  codeassistant:
+    build: .
+    container_name: codeassistant
+    ports:
+      - "1221:1221"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: sqlite+aiosqlite:////srv/data/codeassistant.db
+      WORKSPACE_ROOT: /srv/workspace
+    volumes:
+      # Suhbatlar tarixi konteyner o'chsa ham saqlanadi
+      - ./data:/srv/data
+      # ai_in_pc sandbox — AI faqat shu papkani ko'radi
+      - ./workspace:/srv/workspace
+    restart: unless-stopped

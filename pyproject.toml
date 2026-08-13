@@ -1,0 +1,14 @@
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "UP", "B", "SIM", "I"]
+# UP037: SQLAlchemy va Pydantic forward-ref'larni runtime'da string sifatida
+# hal qiladi — qo'shtirnoqlarni olib tashlash xavfli.
+ignore = ["UP037", "B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-q --strict-markers"

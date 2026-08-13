@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "codeassistant",
+      "runtimeExecutable": "./run.sh",
+      "runtimeArgs": [],
+      "port": 1991
+    }
+  ]
+}
