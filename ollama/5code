@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
-# 5code — shaxsiy lokal kod yordamchisi (Ollama)
+# 5code — shaxsiy lokal AGENTIC kod yordamchisi (Claude Code uslubida)
 #
-#   5code                 interaktiv suhbat
-#   5code "savol"         bir martalik savol
+# Joriy ishlab turgan papka ustida ishlaydi: fayl o'qiydi/yozadi, shell
+# buyruq bajaradi (xavfli buyruqlarga terminalda tasdiq so'raydi).
+#
+#   5code                 interaktiv suhbat (shu papka ustida)
+#   5code "savol"         bir martalik savol / topshiriq
 #   cat main.py | 5code "shu kodni tushuntir"
+#   5code --provider gemini "savol"   boshqa provider bilan
 #   5code --web           web interfeysni ochish
 #   5code --update        modelni Modelfile'dan qayta yig'ish
 #   5code --status        holat tekshiruvi
@@ -75,7 +79,7 @@ case "${1:-}" in
     exit 0
     ;;
   --help|-h)
-    sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//'
     exit 0
     ;;
 esac
@@ -83,16 +87,15 @@ esac
 ensure_server
 ensure_model
 
-# stdin orqali kod kelsa — savolga qo'shib yuboramiz
-if [ ! -t 0 ]; then
-  piped="$(cat)"
-  prompt="${*:-Shu kodni tahlil qil}"
-  exec ollama run "$MODEL" "$prompt"$'\n\n'"$piped"
+# Agentic CLI (app.cli) — fayl o'qish/yozish va shell uchun Python muhiti kerak.
+PYTHON="$PROJECT_DIR/.venv/bin/python"
+if [ ! -x "$PYTHON" ]; then
+  printf '%sPython muhiti birinchi marta sozlanmoqda…%s\n' "$c_dim" "$c_off" >&2
+  python3 -m venv "$PROJECT_DIR/.venv"
+  "$PROJECT_DIR/.venv/bin/pip" install -q --upgrade pip
+  "$PROJECT_DIR/.venv/bin/pip" install -q -r "$PROJECT_DIR/requirements.txt"
 fi
 
-if [ $# -gt 0 ]; then
-  exec ollama run "$MODEL" "$*"
-fi
-
-printf '%s5code%s — lokal kod yordamchisi. Chiqish: /bye\n' "$c_acc" "$c_off"
-exec ollama run "$MODEL"
+# PYTHONPATH orqali `app` paketini topadi — cwd o'zgarmaydi, chunki 5code
+# JORIY ishlab turgan papka ustida ishlashi kerak (Claude Code kabi).
+exec env PYTHONPATH="$PROJECT_DIR" "$PYTHON" -m app.cli "$@"

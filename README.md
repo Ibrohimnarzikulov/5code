@@ -14,7 +14,7 @@ macbookair_4 ning shaxsiy AI tizimi — FastAPI backend + React (Dark Glass) UI.
 
 | Imkoniyat | Tavsif |
 | --- | --- |
-| **`5code` — lokal model** | Terminalda ham, saytda ham. Internetsiz, maxfiy, tekin |
+| **`5code` — agentic CLI** | Claude Code uslubida: joriy papkada fayl o'qiydi/yozadi, buyruq bajaradi. Lokal, internetsiz, tekin |
 | **React UI** | Vite + React Router · login, signup, modellar, chat, admin |
 | **Tekin cloud AI** | Gemini free tier · Groq · OpenRouter · Claude |
 | **Artifact** | AI to'liq HTML sayt yasaydi → o'ng panelda jonli ko'rinadi, versiyalanadi |
@@ -106,16 +106,27 @@ Yoki **Ro'yxatdan o'ting** — yangi hisob oddiy `user` roli bilan yaratiladi.
 
 ---
 
-## `5code` — lokal model
+## `5code` — lokal agentic CLI
 
-Terminalda ham, saytda ham ishlaydigan shaxsiy kod modeli.
-Asos: **qwen2.5-coder:14b** (~9GB) — 16GB RAM uchun eng yaxshi balans.
+**Claude Code uslubidagi** terminal yordamchisi: joriy ishlab turgan papka
+ustida ishlaydi — fayl o'qiydi/yozadi, shell buyruq bajaradi, ko'p turli
+(multi-turn) suhbatda topshiriqni bajarib beradi. Asos model:
+**qwen2.5-coder:14b** (~9GB, lokal, internetsiz, tekin) — `--provider` bilan
+istalgan cloud providerga ham o'tish mumkin.
 
 ### O'rnatish
 
+Bir qatorda (git clone + Python muhit + `5code` buyrug'ini PATH ga qo'yadi):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Ibrohimnarzikulov/codeassistant/main/install.sh | bash
+```
+
+Yoki loyiha allaqachon lokalda bo'lsa:
+
 ```bash
 ollama pull qwen2.5-coder:14b   # ~9GB, bir marta
-./ollama/install.sh             # 5code buyrug'ini o'rnatadi
+./ollama/install.sh             # venv + 5code buyrug'ini o'rnatadi
 ```
 
 `install.sh` sudo talab qilmaydi: skript `~/.local/bin` ga qo'yiladi va
@@ -124,13 +135,20 @@ kerak bo'lsa `PATH` ga o'zi qo'shiladi.
 ### Ishlatish
 
 ```bash
-5code                              # interaktiv suhbat
-5code "python da fayl o'qish"      # bir martalik savol
+5code                              # interaktiv suhbat (shu papka ustida)
+5code "python da fayl o'qish"      # bir martalik topshiriq
 cat main.py | 5code "shuni tushuntir"
+5code --provider gemini "savol"    # boshqa provider bilan (cloud)
 5code --web                        # web interfeysni ochish
 5code --update                     # Modelfile o'zgarsa qayta yig'ish
 5code --status                     # holat tekshiruvi
 ```
+
+**Xavfsizlik.** `5code` qayerda ishga tushirilsa — o'sha papka ustida to'liq
+ruxsat bilan ishlaydi (fayl o'qish/yozish, shell). `run_shell`,
+`read_file`, `write_file`, `list_dir` tool'lari `app/ai/tools.py` dagi bir xil
+sandbox orqali ishlaydi: `rm`, `sudo`, `dd`, `git push --force` kabi xavfli
+buyruqlar avval terminalda tasdiq so'raydi — model buni o'zi hal qilmaydi.
 
 Model xulqi `ollama/Modelfile` da: o'zbek tili, kod sifati talablari,
 UI animatsiya qoidalari, xavfsizlik ogohlantirishlari. O'zgartirgach
@@ -223,6 +241,7 @@ app/
 ├── schemas.py       # Pydantic sxemalari
 ├── security.py      # bcrypt + JWT
 ├── deps.py          # Auth dependency'lari
+├── cli.py           # 5code agentic terminal CLI (Claude Code uslubida)
 ├── ai/
 │   ├── client.py    # Tool-calling sikli + oqim hodisalari
 │   ├── tools.py     # ai_in_pc + artifact tool'lari
@@ -232,7 +251,7 @@ app/
 │       ├── openai_compat.py     # Groq / OpenRouter / Ollama
 │       └── anthropic_provider.py# Claude
 └── routers/
-    ├── auth.py · users.py · chat.py · artifacts.py
+    ├── auth.py · users.py · chat.py · artifacts.py · download.py
 web/                 # React frontend (Vite)
 ├── vite.config.js   # port 1991, /api va /a → 1221 proxy
 └── src/
@@ -240,12 +259,13 @@ web/                 # React frontend (Vite)
     ├── markdown.js  # yengil markdown renderer
     ├── context/     # AuthContext (login, signup, toast)
     ├── components/  # Shell, Message, ArtifactPanel, Toasts
-    └── pages/       # Login, Signup, Chat, Models, Gallery, Admin
+    └── pages/       # Login, Signup, Chat, Models, Gallery, Admin, Download
 ollama/
 ├── Modelfile        # 5code modeli ta'rifi
-├── 5code            # terminal buyrug'i
-└── install.sh       # o'rnatuvchi
-tests/               # 60 ta test
+├── 5code            # terminal buyrug'i (app.cli ga delegatsiya qiladi)
+└── install.sh       # lokal o'rnatuvchi (venv + PATH)
+install.sh           # bir qatorli o'rnatuvchi (curl | bash)
+tests/               # 100+ test
 ```
 
 ### Yangi provider qo'shish
@@ -258,7 +278,7 @@ qo'shing — qolgan hamma narsa (tool sikli, artifactlar, tarix) o'zgarmaydi.
 ## Testlar
 
 ```bash
-.venv/bin/python -m pytest      # 60 test
+.venv/bin/python -m pytest      # 102 test
 .venv/bin/ruff check app tests  # lint
 ```
 

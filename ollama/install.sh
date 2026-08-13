@@ -21,6 +21,15 @@ sed "s|__PROJECT_DIR__|${PROJECT_DIR}|g" "${PROJECT_DIR}/ollama/5code" > "$TARGE
 chmod +x "$TARGET"
 printf '%s✓%s o'\''rnatildi: %s\n' "$c_ok" "$c_off" "$TARGET"
 
+# Python muhiti — agentic CLI (app.cli) shu orqali ishlaydi
+if [ ! -x "${PROJECT_DIR}/.venv/bin/python" ]; then
+  printf '%s→%s Python muhiti sozlanmoqda…\n' "$c_ok" "$c_off"
+  python3 -m venv "${PROJECT_DIR}/.venv"
+  "${PROJECT_DIR}/.venv/bin/pip" install -q --upgrade pip
+  "${PROJECT_DIR}/.venv/bin/pip" install -q -r "${PROJECT_DIR}/requirements.txt"
+  printf '%s✓%s Python muhiti tayyor\n' "$c_ok" "$c_off"
+fi
+
 # PATH ni tekshirish
 if ! printf '%s' ":${PATH}:" | grep -q ":${BIN_DIR}:"; then
   case "${SHELL##*/}" in
