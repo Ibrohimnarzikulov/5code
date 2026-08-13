@@ -8,10 +8,14 @@ export default defineConfig({
   server: {
     port: 1991,
     strictPort: true,
-    // Backend boshqa portda — /api va /a shu yerga yo'naltiriladi
+    // Backend boshqa portda — /api va /a/{token} shu yerga yo'naltiriladi.
+    // MUHIM: "/a/" (slash bilan) — "/a" bo'lsa Vite buni prefiks sifatida
+    // moslashtirib, /admin va /artifacts kabi frontend route'larni ham
+    // (ular ham "/a" bilan boshlanadi) noto'g'ri backend'ga proksi qilib,
+    // eskirgan web/dist build'ini qaytarib yuborardi.
     proxy: {
       "/api": { target: BACKEND, changeOrigin: true },
-      "/a": { target: BACKEND, changeOrigin: true },
+      "/a/": { target: BACKEND, changeOrigin: true },
     },
   },
   build: { outDir: "dist", sourcemap: false },
