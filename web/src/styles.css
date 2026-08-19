@@ -1374,6 +1374,17 @@ select:focus {
   .new-user {
     grid-template-columns: 1fr;
   }
+
+  /* .menu-btn shu kenglikda fixed va chap burchakda — sahifa
+     sarlavhalari (chat-head/page-head) ustiga tushib qolmasligi uchun
+     chap tarafdan joy qoldiramiz. */
+  .chat-head {
+    padding-left: 60px;
+  }
+
+  .page {
+    padding-left: 60px;
+  }
 }
 
 .menu-btn,
