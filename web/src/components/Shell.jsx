@@ -1,5 +1,6 @@
 /** Umumiy karkas: chap navigatsiya + kontent. */
 
+import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { brandModel, brandProvider } from "../brand";
@@ -8,15 +9,32 @@ import { useAuth } from "../context/AuthContext";
 export default function Shell({ children, sidebarExtra = null, wide = false }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   function handleLogout() {
     logout();
     navigate("/login", { replace: true });
   }
 
+  function closeMobile() {
+    setMobileOpen(false);
+  }
+
   return (
     <section className={`app${wide ? " with-artifact" : ""}`}>
-      <aside className="sidebar glass">
+      <button
+        className="menu-btn icon-btn"
+        onClick={() => setMobileOpen((v) => !v)}
+        title="Menyu"
+      >
+        ☰
+      </button>
+
+      {mobileOpen && (
+        <div className="sidebar-backdrop" onClick={closeMobile} />
+      )}
+
+      <aside className={`sidebar glass${mobileOpen ? " open" : ""}`}>
         <div className="brand">
           <div className="brand-mark">C</div>
           <div>
@@ -30,20 +48,20 @@ export default function Shell({ children, sidebarExtra = null, wide = false }) {
         </div>
 
         <nav className="nav stagger">
-          <NavLink to="/chat" className="nav-link anim-left">
+          <NavLink to="/chat" className="nav-link anim-left" onClick={closeMobile}>
             💬 Suhbat
           </NavLink>
-          <NavLink to="/models" className="nav-link anim-left">
+          <NavLink to="/models" className="nav-link anim-left" onClick={closeMobile}>
             ◆ Modellar
           </NavLink>
-          <NavLink to="/artifacts" className="nav-link anim-left">
+          <NavLink to="/artifacts" className="nav-link anim-left" onClick={closeMobile}>
             ◫ Saytlarim
           </NavLink>
-          <NavLink to="/download" className="nav-link anim-left">
+          <NavLink to="/download" className="nav-link anim-left" onClick={closeMobile}>
             ⤓ Yuklab olish
           </NavLink>
           {user?.role === "admin" && (
-            <NavLink to="/admin" className="nav-link anim-left">
+            <NavLink to="/admin" className="nav-link anim-left" onClick={closeMobile}>
               ⚙︎ Foydalanuvchilar
             </NavLink>
           )}

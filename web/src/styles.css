@@ -1336,15 +1336,33 @@ select:focus {
     inset: 10px auto 10px 10px;
     width: 275px;
     z-index: 40;
-    transform: translateX(-115%);
+    /* !important: .sidebar ham slideInLeft kirish animatsiyasini ishlatadi
+       (animation-fill-mode: both), animatsiya esa oxirgi transform holatini
+       doim ustun qo'yadi — shu qatordagi oddiy transform'ni bekor qilmasligi
+       uchun majburlaymiz. */
+    transform: translateX(-115%) !important;
+    transition: transform 0.25s var(--ease);
   }
 
   .sidebar.open {
-    transform: translateX(0);
+    transform: translateX(0) !important;
   }
 
   .menu-btn {
     display: grid !important;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 41;
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 35;
   }
 
   .messages,

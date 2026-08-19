@@ -55,15 +55,6 @@ export default function Download() {
     `${model} --status                     # holat tekshiruvi`,
   ].join("\n");
 
-  const serverCmd = [
-    "cd ~/5code        # o'rnatuvchi shu papkaga klonlaydi",
-    "cp .env.example .env",
-    "./run.sh          # backend " +
-      (info?.backend_port ?? 1221) +
-      " + frontend " +
-      (info?.frontend_port ?? 1991),
-  ].join("\n");
-
   return (
     <Shell>
       <div className="page">
@@ -81,7 +72,6 @@ export default function Download() {
         <div className="code-list stagger">
           <CodeBlock title="O'rnatish" code={INSTALL_CMD} onCopy={copy} />
           <CodeBlock title="Ishlatish" code={usageCmd} onCopy={copy} />
-          <CodeBlock title="Serverni ishga tushirish" code={serverCmd} onCopy={copy} />
         </div>
       </div>
     </Shell>
