@@ -187,6 +187,17 @@ class OpenAICompatProvider(Provider):
         calls: dict[int, dict[str, Any]] = {}
         finish_reason = ""
 
+        # Ba'zi lokal modellar tool chaqiruvini strukturaviy `tool_calls`
+        # o'rniga xom JSON matn sifatida qaytaradi (yuqoridagi fallback
+        # parser shuni ushlaydi). Bunday matnni tayyor bo'lmasdan oqim
+        # qilib chiqarsak, foydalanuvchi chatda xom `{"name": "write_file"...}`
+        # ko'radi — shuning uchun javob `{`/`<`/` ` ` bilan boshlansa,
+        # to'liq javob tugab, tool chaqiruvi emasligi aniqlanmaguncha
+        # matnni oqimga chiqarmay, bufferda ushlab turamiz.
+        pending_candidate = ""
+        awaiting_first_char = True
+        looks_like_tool_call = False
+
         try:
             async with (
                 httpx.AsyncClient(timeout=REQUEST_TIMEOUT) as http,
@@ -226,8 +237,25 @@ class OpenAICompatProvider(Provider):
                             yield {"type": "thinking", "text": reasoning}
 
                         if delta.get("content"):
-                            text_parts.append(delta["content"])
-                            yield {"type": "text", "text": delta["content"]}
+                            piece = delta["content"]
+                            text_parts.append(piece)
+
+                            if awaiting_first_char:
+                                pending_candidate += piece
+                                stripped = pending_candidate.lstrip()
+                                if stripped:
+                                    awaiting_first_char = False
+                                    looks_like_tool_call = stripped[0] in "{<`"
+                                    if not looks_like_tool_call:
+                                        yield {
+                                            "type": "text",
+                                            "text": pending_candidate,
+                                        }
+                                        pending_candidate = ""
+                            elif looks_like_tool_call:
+                                pending_candidate += piece
+                            else:
+                                yield {"type": "text", "text": piece}
 
                         for call in delta.get("tool_calls") or []:
                             index = call.get("index", 0)
@@ -257,6 +285,10 @@ class OpenAICompatProvider(Provider):
             blocks.append(fallback_call)
         elif joined:
             blocks.append({"type": "text", "text": joined})
+            # Tool chaqiruvi bo'lib chiqmadi — bufferlangan matnni endi
+            # foydalanuvchiga ko'rsatamiz (yuqorida oqimda ushlab turilgan edi).
+            if pending_candidate:
+                yield {"type": "text", "text": pending_candidate}
 
         for index in sorted(calls):
             slot = calls[index]

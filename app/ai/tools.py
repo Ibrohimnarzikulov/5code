@@ -105,8 +105,11 @@ TOOL_SCHEMAS: list[dict[str, Any]] = [
     {
         "name": "write_file",
         "description": (
-            "Workspace ichida fayl yaratadi yoki to'liq qayta yozadi. Mavjud "
-            "faylni qayta yozishdan oldin foydalanuvchini ogohlantiring."
+            "Workspace ichida fayl yaratadi yoki to'liq qayta yozadi. "
+            "Foydalanuvchi fayl/kod yozishni so'raganda SHU tool'dan "
+            "foydalan — javobda kod blokini yozib, foydalanuvchiga o'zi "
+            "saqlashni taklif qilish emas. Mavjud faylni qayta yozishdan "
+            "oldin foydalanuvchini ogohlantiring."
         ),
         "input_schema": {
             "type": "object",
