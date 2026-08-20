@@ -49,7 +49,7 @@ export default function Signup() {
               <input
                 id="su-username"
                 autoComplete="username"
-                placeholder="dilmurod"
+                placeholder="username"
                 pattern="[\w.\-]{3,64}"
                 title="3–64 belgi: harf, raqam, nuqta, tire, pastki chiziq"
                 value={username}

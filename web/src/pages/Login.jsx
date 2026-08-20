@@ -36,7 +36,7 @@ export default function Login() {
               <input
                 id="username"
                 autoComplete="username"
-                placeholder="macbookair_4"
+                placeholder="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required

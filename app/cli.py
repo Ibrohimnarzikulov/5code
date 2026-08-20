@@ -85,10 +85,13 @@ def display_model(provider: str, model: str | None) -> str:
 
 def format_banner(*, cwd: Path, provider: str, model: str | None) -> str:
     """Ishga tushishda ko'rsatiladigan holat va ruxsat banneri."""
+    login_url = f"http://localhost:{settings.frontend_port}/login"
     return (
         f"{ACC}{BOLD}5code{OFF} {DIM}— lokal kod yordamchisi{OFF}\n"
         f"{DIM}Papka:{OFF}  {cwd}\n"
         f"{DIM}Model:{OFF}  {display_model(provider, model)}\n"
+        f"{DIM}Sayt:{OFF}   {ACC}{login_url}{OFF} "
+        f"{DIM}(avval shu yerda login qiling){OFF}\n"
         f"{DIM}Bu CLI shu papkada fayl o'qiy/yoza oladi va buyruq bajara oladi.{OFF}\n"
         f"{DIM}Xavfli buyruqlar tasdiq so'raydi. Chiqish: /bye yoki Ctrl+D{OFF}\n"
     )
