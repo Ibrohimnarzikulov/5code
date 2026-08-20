@@ -187,7 +187,7 @@ export default function Admin() {
 
         <form className="new-user" onSubmit={createUser}>
           <div className="field">
-            <label htmlFor="nu-username">Yangi login</label>
+            <label htmlFor="nu-username">Yangi username</label>
             <input
               id="nu-username"
               value={form.username}

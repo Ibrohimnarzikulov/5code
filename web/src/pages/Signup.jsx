@@ -45,7 +45,7 @@ export default function Signup() {
 
           <form onSubmit={handleSubmit} className="stagger">
             <div className="field anim-up">
-              <label htmlFor="su-username">Login</label>
+              <label htmlFor="su-username">Username</label>
               <input
                 id="su-username"
                 autoComplete="username"

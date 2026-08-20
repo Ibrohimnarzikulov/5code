@@ -32,7 +32,7 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="stagger">
             <div className="field anim-up">
-              <label htmlFor="username">Login</label>
+              <label htmlFor="username">Username</label>
               <input
                 id="username"
                 autoComplete="username"
